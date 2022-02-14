@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iesfranciscodelosrios.controllers.LoginController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.iesfranciscodelosrios.controllers.LoginController">
     <center>
         <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="10.0" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -34,7 +34,7 @@
             <children>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                     <children>
-                        <RadioButton alignment="CENTER_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="Usuario">
+                        <RadioButton fx:id="rbtn_user" alignment="CENTER_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="Usuario">
                             <toggleGroup>
                                 <ToggleGroup fx:id="userType" />
                             </toggleGroup></RadioButton>
@@ -49,6 +49,7 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Archivo">
                     <items>
+                        <MenuItem fx:id="mi_connect" mnemonicParsing="false" text="Conectar al servidor" />
                         <MenuItem fx:id="mi_close" mnemonicParsing="false" text="Cerrar" />
                     </items>
                 </Menu>

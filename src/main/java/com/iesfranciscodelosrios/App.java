@@ -1,5 +1,6 @@
 package com.iesfranciscodelosrios;
 
+import com.iesfranciscodelosrios.service.SocketService;
 import com.iesfranciscodelosrios.utils.Dialog;
 import com.iesfranciscodelosrios.utils.Tools;
 import javafx.application.Application;
@@ -16,6 +17,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+        SocketService.connectToServer();
         loadScene(stage, "login", " LibronShop", false, false);
     }
 

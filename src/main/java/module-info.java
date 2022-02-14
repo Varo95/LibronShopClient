@@ -4,10 +4,9 @@ module LibronShopClient {
     requires javafx.fxml;
     requires javafx.graphics;
     requires javafx.media;
-    requires javafx.base;
-    requires java.sql;
+    requires java.base;
     requires org.jfxtras.styles.jmetro;
 
-    opens com.iesfranciscodelosrios.controllers to javafx.fxml, javafx.controls, javafx.graphics, javafx.media, javafx.base;
+    opens com.iesfranciscodelosrios.controllers to javafx.fxml, javafx.controls, javafx.graphics, javafx.media;
     exports com.iesfranciscodelosrios;
 }
