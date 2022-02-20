@@ -7,23 +7,23 @@ import java.util.List;
 public class Client extends User implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private Long balance;
+    private Double balance;
     private List<Book> pBooks;
 
     public Client(){
         super();
     }
 
-    public Client(Long balance, List<Book> pBooks) {
+    public Client(Double balance, List<Book> pBooks) {
         this.balance = balance;
         this.pBooks = pBooks;
     }
 
-    public Long getBalance() {
+    public Double getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(Double balance) {
         this.balance = balance;
     }
 

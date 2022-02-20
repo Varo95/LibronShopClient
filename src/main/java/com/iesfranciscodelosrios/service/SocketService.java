@@ -83,9 +83,7 @@ public class SocketService {
                 } else if (o.containsKey(Operations.ServerActions.UserAlreadyExist)) {
 
                 } else if (o.containsKey(Operations.ServerActions.SendBooksToPurchase)) {
-                    Platform.runLater(()->{
-                        MenuController.setContentOnView(Operations.UserOptions.ViewOnStockBooks, (List)o.get(Operations.ServerActions.SendBooksToPurchase), null);
-                    });
+                    Platform.runLater(()-> MenuController.setContentOnView(Operations.UserOptions.ViewOnStockBooks, (List)o.get(Operations.ServerActions.SendBooksToPurchase), null));
                 } else if (o.containsKey(Operations.ServerActions.NotEnoughBalance)) {
                     Platform.runLater(() -> Dialog.showInformation("¡Error!", "No pudiste comprar el libro", "No dispones de suficiente saldo en la cuenta"));
                 } else if (o.containsKey(Operations.ServerActions.WrongPassword)) {
@@ -100,8 +98,8 @@ public class SocketService {
                         Platform.runLater(() -> Dialog.showInformation("¡Éxito!", "Te has registrado correctamente como cliente", "Ahora puedes iniciar sesión"));
                     if (object instanceof Manager)
                         Platform.runLater(() -> Dialog.showInformation("¡Éxito!", "Te has registrado correctamente como librero ", "Ahora puedes iniciar sesión"));
-                    if (object instanceof List b) {
-                        //todo cosas
+                    if (object instanceof Book b) {
+                        Platform.runLater(()-> Dialog.showInformation("¡Éxito!","Compraste el libro: "+b.getTitle()+"\ndel autor: "+b.getAuthor()+"\npor: "+b.getPrice(),"¡Disfrútalo!"));
                     }
                 }
             } catch (EOFException e) {

@@ -99,7 +99,7 @@ public class LoginController {
                 user.setEmail(tf_email.getText());
                 user.setPassword(Tools.encryptSHA256(tf_passwd.getText()));
                 if(user instanceof Client c)
-                    c.setBalance(0L);
+                    c.setBalance(0.0);
                 try {
                     LinkedHashMap<Operations.UserOptions, User> operation = new LinkedHashMap<>();
                     operation.put(Operations.UserOptions.Register, user);
