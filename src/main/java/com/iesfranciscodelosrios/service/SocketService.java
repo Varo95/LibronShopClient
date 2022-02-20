@@ -3,6 +3,7 @@ package com.iesfranciscodelosrios.service;
 import com.iesfranciscodelosrios.App;
 import com.iesfranciscodelosrios.controllers.LoginController;
 import com.iesfranciscodelosrios.controllers.MenuController;
+import com.iesfranciscodelosrios.model.Book;
 import com.iesfranciscodelosrios.model.Client;
 import com.iesfranciscodelosrios.model.Manager;
 import com.iesfranciscodelosrios.model.User;
@@ -81,6 +82,10 @@ public class SocketService {
 
                 } else if (o.containsKey(Operations.ServerActions.UserAlreadyExist)) {
 
+                } else if (o.containsKey(Operations.ServerActions.SendBooksToPurchase)) {
+                    Platform.runLater(()->{
+                        MenuController.setContentOnView(Operations.UserOptions.ViewOnStockBooks, (List)o.get(Operations.ServerActions.SendBooksToPurchase), null);
+                    });
                 } else if (o.containsKey(Operations.ServerActions.NotEnoughBalance)) {
                     Platform.runLater(() -> Dialog.showInformation("¡Error!", "No pudiste comprar el libro", "No dispones de suficiente saldo en la cuenta"));
                 } else if (o.containsKey(Operations.ServerActions.WrongPassword)) {
