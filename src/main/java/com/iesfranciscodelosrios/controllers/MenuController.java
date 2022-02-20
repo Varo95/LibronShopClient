@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -109,17 +110,21 @@ public class MenuController {
         //Titulo
         content.addRow(3, new Label(menu[2]));
         content.addRow(4, new TextField());
-        //
+        //Autor
         content.addRow(5, new Label(menu[3]));
-        content.addRow(6, new DatePicker(LocalDate.now()));
-        //
+        content.addRow(6, new TextField());
+        //fechaSalida
         content.addRow(7, new Label(menu[4]));
+        content.addRow(8, new DatePicker(LocalDate.now()));
+        //Precio
+        content.addRow(9, new Label(menu[5]));
         TextField tf_price = new TextField();
         Tools.onlyDoubleValue(tf_price);
-        content.addRow(8, tf_price);
-        content.addRow(9, new CheckBox(menu[5]));
+        content.addRow(10, tf_price);
+        //Stock
+        content.addRow(11, new CheckBox(menu[6]));
         Button send = new Button("Enviar");
-        content.addRow(10, send);
+        content.addRow(12, send);
         for (Node n : content.getChildren()) {
             GridPane.setHalignment(n, HPos.CENTER);
         }
@@ -127,16 +132,18 @@ public class MenuController {
             Book bookToSave = new Book();
             bookToSave.setFrontPage(Tools.encodeBase64Img(cover.getImage()));
             bookToSave.setTitle(((TextField) content.getChildren().get(5)).getText());
-            bookToSave.setReleasedDate(((DatePicker) content.getChildren().get(7)).getValue().atStartOfDay());
-            bookToSave.setPrice(Double.valueOf(((TextField) content.getChildren().get(9)).getText()));
-            bookToSave.setStock(((CheckBox) content.getChildren().get(10)).isSelected());
+            bookToSave.setAuthor(((TextField) content.getChildren().get(7)).getText());
+            bookToSave.setReleasedDate(((DatePicker) content.getChildren().get(9)).getValue().atStartOfDay());
+            bookToSave.setPrice(Double.valueOf(((TextField) content.getChildren().get(11)).getText()));
+            bookToSave.setStock(((CheckBox) content.getChildren().get(12)).isSelected());
             LinkedHashMap<Operations.UserOptions, Object> operation = new LinkedHashMap<>();
             operation.put(Operations.UserOptions.AddBookAction, bookToSave);
             try {
                 SocketService.sendDataToServer(operation);
                 cover.setImage(Tools.decodeBase64Img(menu[0]));
                 ((TextField) content.getChildren().get(5)).clear();
-                ((TextField) content.getChildren().get(9)).clear();
+                ((TextField) content.getChildren().get(7)).clear();
+                ((TextField) content.getChildren().get(11)).clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
