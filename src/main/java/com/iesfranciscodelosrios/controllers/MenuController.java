@@ -1,6 +1,7 @@
 package com.iesfranciscodelosrios.controllers;
 
 import com.iesfranciscodelosrios.model.Book;
+import com.iesfranciscodelosrios.model.User;
 import com.iesfranciscodelosrios.service.SocketService;
 import com.iesfranciscodelosrios.utils.Dialog;
 import com.iesfranciscodelosrios.utils.Operations;
@@ -21,10 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MenuController {
     @FXML
@@ -38,6 +36,8 @@ public class MenuController {
     private GridPane menuOptions;
     private Socket connection;
 
+    private static User user;
+
     @FXML
     protected void initialize() {
         Platform.runLater(() -> menuStage = (Stage) menuOptions.getScene().getWindow());
@@ -48,6 +48,10 @@ public class MenuController {
             menuOptions.addRow(i, Tools.getUserOptions().get(i));
             GridPane.setHalignment(menuOptions.getChildren().get(i), HPos.CENTER);
         }
+    }
+
+    public static synchronized void setUser(User u){
+        user = u;
     }
 
     private void setButtonActions() {
@@ -170,6 +174,17 @@ public class MenuController {
             gridForBook.addRow(3, new Label("Precio: "+b.getPrice()+"€"));
             Button btn_buy = new Button("Comprar");
             //TODO setOnAction del botón
+            btn_buy.setOnAction(event -> {
+                LinkedHashMap<Operations.UserOptions, Object> mapToSend = new LinkedHashMap<>();
+                Map<User, Book> user_book = new HashMap<>();
+                user_book.put(user, b);
+                mapToSend.put(Operations.UserOptions.BuyItem, user_book);
+                try {
+                    SocketService.sendDataToServer(mapToSend);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
             gridForBook.addRow(4, btn_buy);
             for (Node n : gridForBook.getChildren()) {
                 GridPane.setHalignment(n, HPos.CENTER);

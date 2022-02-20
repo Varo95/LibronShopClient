@@ -1,6 +1,7 @@
 package com.iesfranciscodelosrios.utils;
 
 import com.iesfranciscodelosrios.App;
+import com.iesfranciscodelosrios.controllers.MenuController;
 import com.iesfranciscodelosrios.model.User;
 import com.iesfranciscodelosrios.service.SocketService;
 import javafx.application.Platform;
@@ -108,6 +109,7 @@ public class Tools {
 
     public static void setMenuOptions(String[] menu, User client) {
         List<Button> menuButtons = new ArrayList<>();
+        MenuController.setUser(client);
         for (String option : menu) {
             Button btn_option = new Button(option);
             btn_option.setAlignment(Pos.CENTER);
