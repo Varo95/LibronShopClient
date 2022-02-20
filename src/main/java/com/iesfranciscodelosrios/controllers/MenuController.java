@@ -8,12 +8,14 @@ import com.iesfranciscodelosrios.utils.Tools;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -70,19 +72,16 @@ public class MenuController {
 
     private void setIcons() {
         mi_connect.setGraphic(Tools.getIcon("sync"));
+        mi_close.setGraphic(Tools.getIcon("close"));
     }
 
-    public static void setContentOnView(Operations.UserOptions menuToLoadOption, List<Object> objects, String[] menu) {
+    public static void setContentOnView(Operations.UserOptions menuToLoadOption, List objects, String[] menu) {
         if (menuStage != null) {
             GridPane content = (GridPane) menuStage.getScene().lookup("#content");
             if (menuToLoadOption.equals(Operations.UserOptions.AddBook)) {
                 setContentAddBook(content, menu);
             } else if (menuToLoadOption.equals(Operations.UserOptions.ViewOnStockBooks)) {
-                List<Book> availableBooks = new ArrayList<>();
-                for (Object o : objects) {
-                    availableBooks.add((Book) o);
-                }
-
+                setContentViewBooks(content, (List<Book>) objects);
             }
         }
     }
@@ -149,6 +148,38 @@ public class MenuController {
             }
         });
 
+    }
+
+    public static void setContentViewBooks(GridPane content, List<Book> books){
+        int columnCount = 0;
+        int rowCount = 0;
+        for(Book b: books){
+            GridPane gridForBook = new GridPane();
+            gridForBook.setVgap(15);
+            if(columnCount>2) {
+                columnCount = 0;
+                rowCount++;
+            }
+            ImageView cover = new ImageView();
+            cover.setFitHeight(267);
+            cover.setFitWidth(200);
+            cover.setImage(Tools.decodeBase64Img(b.getFrontPage()));
+            gridForBook.addRow(0, cover);
+            gridForBook.addRow(1, new Label("Título: "+b.getTitle()));
+            gridForBook.addRow(2, new Label("Autor: "+((b.getAuthor()==null || b.getAuthor().equals(""))?"Anónimo":b.getAuthor())));
+            gridForBook.addRow(3, new Label("Precio: "+b.getPrice()+"€"));
+            Button btn_buy = new Button("Comprar");
+            //TODO setOnAction del botón
+            gridForBook.addRow(4, btn_buy);
+            for (Node n : gridForBook.getChildren()) {
+                GridPane.setHalignment(n, HPos.CENTER);
+            }
+            gridForBook.setAlignment(Pos.CENTER);
+            content.add(gridForBook, columnCount++,rowCount);
+        }
+        for(Node n: content.getChildren()){
+            GridPane.setHalignment(n, HPos.CENTER);
+        }
     }
 
 }

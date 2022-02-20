@@ -45,6 +45,7 @@ public class Operations implements Serializable {
         SendPurchaseHistory(1),
         SendProfile(2),
         SendSubmenu(3),
+        SendBooksToPurchase(4),
         OperationOk(200),
         OperationOkButNoContent(204),
         UserAlreadyExist(403),
