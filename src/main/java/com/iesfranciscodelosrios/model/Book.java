@@ -9,6 +9,7 @@ public class Book implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
     private String title;
+    private String author;
     //Imagen guardada en Base64
     private String frontPage;
 
@@ -26,9 +27,10 @@ public class Book implements Serializable {
         this.id = -1L;
     }
 
-    public Book(Long id, String title, String frontPage, Double price, LocalDateTime releasedDate, LocalDateTime pDate, boolean stock, Client buyer) {
+    public Book(Long id, String title,String author, String frontPage, Double price, LocalDateTime releasedDate, LocalDateTime pDate, boolean stock, Client buyer) {
         this.id = id;
         this.title = title;
+        this.author = author;
         this.frontPage = frontPage;
         this.price = price;
         this.releasedDate = releasedDate;
@@ -51,6 +53,14 @@ public class Book implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getFrontPage() {
