@@ -1,5 +1,6 @@
 package com.iesfranciscodelosrios.controllers;
 
+import com.iesfranciscodelosrios.App;
 import com.iesfranciscodelosrios.model.Book;
 import com.iesfranciscodelosrios.model.User;
 import com.iesfranciscodelosrios.service.SocketService;
@@ -26,10 +27,10 @@ import java.util.*;
 
 public class MenuController {
     @FXML
-    private MenuItem mi_close;
-    @FXML
     private MenuItem mi_connect;
-    private static Stage menuStage;
+    public static Stage menuStage;
+    @FXML
+    private MenuItem mi_close_session;
     @FXML
     private GridPane content;
     @FXML
@@ -67,17 +68,22 @@ public class MenuController {
                 }
             }
         });
-        mi_close.setOnAction(event -> {
-            if (connection != null)
-                SocketService.closeConnection();
-            ((Stage) menuOptions.getScene().getWindow()).close();
+        mi_close_session.setOnAction(event -> {
+            if(user!=null)
+                user = null;
+            Platform.runLater(()->{
+                menuStage.close();
+                MenuController.menuStage = null;
+                if(!LoginController.loginStage.isShowing())
+                    LoginController.loginStage.show();
+            });
         });
-        Platform.runLater(() -> menuOptions.getScene().getWindow().setOnCloseRequest(event -> mi_close.fire()));
+        Platform.runLater(() -> menuOptions.getScene().getWindow().setOnCloseRequest(event -> mi_close_session.fire()));
     }
 
     private void setIcons() {
         mi_connect.setGraphic(Tools.getIcon("sync"));
-        mi_close.setGraphic(Tools.getIcon("close"));
+        mi_close_session.setGraphic(Tools.getIcon("close-session"));
     }
 
     public static void setContentOnView(Operations.UserOptions menuToLoadOption, List objects, String[] menu) {
@@ -170,8 +176,8 @@ public class MenuController {
                 rowCount++;
             }
             ImageView cover = new ImageView();
-            cover.setFitHeight(267);
-            cover.setFitWidth(200);
+            cover.setFitHeight(275);
+            cover.setFitWidth(180);
             cover.setImage(Tools.decodeBase64Img(b.getFrontPage()));
             gridForBook.addRow(0, cover);
             gridForBook.addRow(1, new Label("Título: "+b.getTitle()));

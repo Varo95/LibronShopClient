@@ -27,7 +27,7 @@
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
               <MenuItem fx:id="mi_connect" mnemonicParsing="false" text="Conectar al servidor" />
-                  <MenuItem fx:id="mi_close" mnemonicParsing="false" text="Cerrar" />
+                  <MenuItem fx:id="mi_close_session" mnemonicParsing="false" text="Cerrar sesión" />
             </items>
           </Menu>
         </menus>
