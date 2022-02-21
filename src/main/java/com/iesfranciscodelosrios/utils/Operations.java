@@ -13,19 +13,20 @@ public class Operations implements Serializable {
         ViewOnStockBooks(2),//Menu
         ViewAccount(3),//Menu
         ChargeAccount(4),//Menu
-        ViewPurchaseHistory(5),//Menu->historial compra
-        BuyItem(6),//OK
+        ChargeAccountSend(5),//enviar nueva cantidad
+        ViewPurchaseHistory(6),//Menu->historial compra
+        BuyItem(7),//OK
         //Ociones de un Operador
-        AddBook(7), //menu añadir
-        AddBookAction(8),//enviar libro
-        ChangeStock(9), //menu libros para cambiar stock
-        ChangeStockAction(10),//enviar nuevos stocks
-        DeleteBook(10),//menu para eliminar libros
-        DeleteBookAction(11),//enviar borrar libro
-        SeeClients(12),//menu para ver clientes
-        SeeClientRemove(13),//opcion eliminar clientes
-        SeeClientsAdd(14),//opcion añadir cliente
-        SeeClientsModify(14);//opcion cambiar cliente
+        AddBook(8), //menu añadir
+        AddBookAction(9),//enviar libro
+        ChangeStock(10), //menu libros para cambiar stock
+        ChangeStockAction(11),//enviar nuevos stocks
+        DeleteBook(12),//menu para eliminar libros
+        DeleteBookAction(13),//enviar borrar libro
+        SeeClients(14),//menu para ver clientes
+        SeeClientRemove(15),//opcion eliminar clientes
+        SeeClientsAdd(16),//opcion añadir cliente
+        SeeClientsModify(17);//opcion cambiar cliente
         @Serial
         private static final long serialVersionUID = 1L;
         private final int i;
@@ -44,8 +45,9 @@ public class Operations implements Serializable {
         SendMenu(0),
         SendPurchaseHistory(1),
         SendProfile(2),
-        SendSubmenu(3),
+        SendAddBook(3),
         SendBooksToPurchase(4),
+        NewBalance(5),
         OperationOk(200),
         OperationOkButNoContent(204),
         UserAlreadyExist(403),

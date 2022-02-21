@@ -21,6 +21,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SocketService {
 
@@ -70,14 +71,17 @@ public class SocketService {
                     Tools.setMenuOptions((String[]) o.get(Operations.ServerActions.SendMenu), (User) o.get(Operations.ServerActions.OperationOk));
                     Platform.runLater(() -> {
                         LoginController.loginStage.close();
-                        App.loadScene(new Stage(), "menu", " Libron Shop", true, true);
+                        if(MenuController.menuStage == null)
+                            MenuController.menuStage = new Stage();
+                        App.loadScene(MenuController.menuStage, "menu", " Libron Shop", true, true);
                     });
-                } else if (o.containsKey(Operations.ServerActions.SendSubmenu)) {
-                    Platform.runLater(() -> {
-                        MenuController.setContentOnView(Operations.UserOptions.AddBook, null, (String[]) o.get(Operations.ServerActions.SendSubmenu));
-                    });
+                } else if (o.containsKey(Operations.ServerActions.SendAddBook)) {
+                    Platform.runLater(() -> MenuController.setContentOnView(Operations.UserOptions.AddBook, null, (String[]) o.get(Operations.ServerActions.SendAddBook)));
+                } else if (o.containsKey(Operations.ServerActions.SendProfile)) {
+                    Map<String, Client> object = (Map<String, Client>) o.get(Operations.ServerActions.SendProfile);
+                    Platform.runLater(() -> MenuController.setContentOnView(Operations.UserOptions.ChargeAccount, List.of(object), null));
                 } else if (o.containsKey(Operations.ServerActions.OperationOkButNoContent)) {
-
+                    Platform.runLater(()-> Dialog.showError("Error","Hubo un problema en el servidor","Contacte con los desarrolladores"));
                 } else if (o.containsKey(Operations.ServerActions.UserAlreadyExist)) {
                     Platform.runLater(() -> Dialog.showWarning("¡Error", "No pudiste registrarte con ese email", "Ya existe, prueba a iniciar sesion o registrarte con otro correo"));
                 } else if (o.containsKey(Operations.ServerActions.SendBooksToPurchase)) {
@@ -104,6 +108,11 @@ public class SocketService {
                             Book b = (Book) o2;
                             Platform.runLater(() -> Dialog.showInformation("¡Éxito!", "Compraste el libro: " + b.getTitle() + "\nAutor: " + ((b.getAuthor() == null) ? "Anónimo" : b.getAuthor()) + "\nPor: " + b.getPrice() + " €", "¡Disfrútalo!"));
                         });
+                    if(object instanceof Double account && !o.containsKey(Operations.ServerActions.NewBalance)){
+                        Platform.runLater(()-> MenuController.setContentOnView(Operations.UserOptions.ViewAccount, List.of(account), null));
+                    }else if(object instanceof Double newBalance && o.containsKey(Operations.ServerActions.NewBalance)){
+                        Platform.runLater(() -> Dialog.showInformation("¡Éxito!", "Tu nuevo saldo es de: " + newBalance, "Esta respuesta llegó desde el servidor"));
+                    }
                 }
             } catch (EOFException e) {
                 Platform.runLater(() -> Dialog.showWarning("¡Aviso!", "Hubo un error en la conexión al recibir la petición del servidor", ""));
@@ -111,9 +120,7 @@ public class SocketService {
                     objectInputStream.close();
                 throw new SocketException("El servidor me ha desconectado");
             }
-            //cosas que hacer
         }
-        //condiciones de las peticiones recibidas por el servidor
     }
 
     public static void sendDataToServer(Object o) throws IOException {
