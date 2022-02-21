@@ -15,6 +15,8 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import jfxtras.styles.jmetro.MDL2IconFont;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -88,6 +90,14 @@ public class Tools {
             Platform.runLater(() -> Dialog.showWarning("Error", "No se pudo enviar correctamente la portada", "Pongase en contacto con los desarrolladores"));
         }
         return "";
+    }
+
+    public static boolean onlyValidEmail(String email){
+        try {
+            new InternetAddress(email).validate();return true;
+        } catch (AddressException ex) {
+            return false;
+        }
     }
 
     public static void onlyDoubleValue(TextField tf) {

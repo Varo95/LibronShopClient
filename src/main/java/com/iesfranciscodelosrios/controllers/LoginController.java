@@ -81,32 +81,38 @@ public class LoginController {
         });
         btn_login.setOnAction(event -> {
             if (connection != null && user != null) {
-                user.setEmail(tf_email.getText().replace("\n", ""));
-                user.setPassword(Tools.encryptSHA256(tf_passwd.getText().replace("\n", "")));
-                try {
-                    LinkedHashMap<Operations.UserOptions, User> operation = new LinkedHashMap<>();
-                    operation.put(Operations.UserOptions.Login, user);
-                    SocketService.sendDataToServer(operation);
-                }catch (IOException e){
-                    Dialog.showError("Error","Se perdió la conexión con el servidor a la hora de enviarse el objeto","");
-                }
+                if((user instanceof Client && Tools.onlyValidEmail(tf_email.getText().replace("\n", "")) || user instanceof Manager)) {
+                    user.setEmail(tf_email.getText().replace("\n", ""));
+                    user.setPassword(Tools.encryptSHA256(tf_passwd.getText().replace("\n", "")));
+                    try {
+                        LinkedHashMap<Operations.UserOptions, User> operation = new LinkedHashMap<>();
+                        operation.put(Operations.UserOptions.Login, user);
+                        SocketService.sendDataToServer(operation);
+                    } catch (IOException e) {
+                        Dialog.showError("Error", "Se perdió la conexión con el servidor a la hora de enviarse el objeto", "");
+                    }
+                }else
+                    Dialog.showWarning("Error", "No puede iniciar sesión", "Introduzca un email válido");
             } else {
                 Dialog.showError("Error", "No hay conexión con el servidor", "Pulsa Archivo-> Conectar con servidor para intentar de nuevo una conexión");
             }
         });
         btn_register.setOnAction(event -> {
             if (connection != null && user != null) {
-                user.setEmail(tf_email.getText());
-                user.setPassword(Tools.encryptSHA256(tf_passwd.getText()));
-                if(user instanceof Client c)
-                    c.setBalance(0.0);
-                try {
-                    LinkedHashMap<Operations.UserOptions, User> operation = new LinkedHashMap<>();
-                    operation.put(Operations.UserOptions.Register, user);
-                    SocketService.sendDataToServer(operation);
-                }catch (IOException e){
-                    e.printStackTrace();
-                }
+                if(user instanceof Client && Tools.onlyValidEmail(tf_email.getText().replace("\n", ""))) {
+                    user.setEmail(tf_email.getText());
+                    user.setPassword(Tools.encryptSHA256(tf_passwd.getText()));
+                    if (user instanceof Client c)
+                        c.setBalance(0.0);
+                    try {
+                        LinkedHashMap<Operations.UserOptions, User> operation = new LinkedHashMap<>();
+                        operation.put(Operations.UserOptions.Register, user);
+                        SocketService.sendDataToServer(operation);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else
+                    Dialog.showWarning("Error", "No puede iniciar sesión", "Introduzca un email válido");
             } else {
                 Dialog.showError("Error", "No hay conexión con el servidor", "Pulsa Archivo-> Conectar con servidor para intentar de nuevo una conexión");
             }
