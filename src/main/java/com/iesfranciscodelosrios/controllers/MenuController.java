@@ -37,6 +37,7 @@ public class MenuController {
     private Socket connection;
 
     private static User user;
+    private static boolean isContentAddBook = false;
 
     @FXML
     protected void initialize() {
@@ -92,65 +93,69 @@ public class MenuController {
 
     public static void setContentAddBook(GridPane content, String[] menu) {
         //Portada
-        ImageView cover = new ImageView();
-        cover.setFitHeight(267);
-        cover.setFitWidth(200);
-        cover.setImage(Tools.decodeBase64Img(menu[0]));
-        content.addRow(0, cover);
-        content.addRow(1, new Label(menu[1]));
-        TextField tf_cover = new TextField();
-        tf_cover.textProperty().addListener(onChange -> {
-            Image i = Tools.getImage(tf_cover.getText());
-            cover.setImage(Objects.requireNonNullElse(i, Tools.decodeBase64Img(menu[0])));
-        });
-        content.addRow(2, tf_cover);
-        Button examineImg = new Button("Examinar");
-        examineImg.setOnAction(event -> {
-            String file = Tools.selectImg();
-            ((TextField) content.getChildren().get(2)).setText((file == null) ? "" : file);
-        });
-        content.addRow(2, examineImg);
-        //Titulo
-        content.addRow(3, new Label(menu[2]));
-        content.addRow(4, new TextField());
-        //Autor
-        content.addRow(5, new Label(menu[3]));
-        content.addRow(6, new TextField());
-        //fechaSalida
-        content.addRow(7, new Label(menu[4]));
-        content.addRow(8, new DatePicker(LocalDate.now()));
-        //Precio
-        content.addRow(9, new Label(menu[5]));
-        TextField tf_price = new TextField();
-        Tools.onlyDoubleValue(tf_price);
-        content.addRow(10, tf_price);
-        //Stock
-        content.addRow(11, new CheckBox(menu[6]));
-        Button send = new Button("Enviar");
-        content.addRow(12, send);
-        for (Node n : content.getChildren()) {
-            GridPane.setHalignment(n, HPos.CENTER);
-        }
-        send.setOnAction(event -> {
-            Book bookToSave = new Book();
-            bookToSave.setFrontPage(Tools.encodeBase64Img(cover.getImage()));
-            bookToSave.setTitle(((TextField) content.getChildren().get(5)).getText());
-            bookToSave.setAuthor(((TextField) content.getChildren().get(7)).getText());
-            bookToSave.setReleasedDate(((DatePicker) content.getChildren().get(9)).getValue().atStartOfDay());
-            bookToSave.setPrice(Double.valueOf(((TextField) content.getChildren().get(11)).getText()));
-            bookToSave.setStock(((CheckBox) content.getChildren().get(12)).isSelected());
-            LinkedHashMap<Operations.UserOptions, Object> operation = new LinkedHashMap<>();
-            operation.put(Operations.UserOptions.AddBookAction, bookToSave);
-            try {
-                SocketService.sendDataToServer(operation);
-                cover.setImage(Tools.decodeBase64Img(menu[0]));
-                ((TextField) content.getChildren().get(5)).clear();
-                ((TextField) content.getChildren().get(7)).clear();
-                ((TextField) content.getChildren().get(11)).clear();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if(!isContentAddBook) {
+            ImageView cover = new ImageView();
+            cover.setFitHeight(267);
+            cover.setFitWidth(200);
+            cover.setImage(Tools.decodeBase64Img(menu[0]));
+            content.addRow(0, cover);
+            content.addRow(1, new Label(menu[1]));
+            TextField tf_cover = new TextField();
+            tf_cover.textProperty().addListener(onChange -> {
+                Image i = Tools.getImage(tf_cover.getText());
+                cover.setImage(Objects.requireNonNullElse(i, Tools.decodeBase64Img(menu[0])));
+            });
+            content.addRow(2, tf_cover);
+            Button examineImg = new Button("Examinar");
+            examineImg.setOnAction(event -> {
+                String file = Tools.selectImg();
+                ((TextField) content.getChildren().get(2)).setText((file == null) ? "" : file);
+            });
+            content.addRow(2, examineImg);
+            //Titulo
+            content.addRow(3, new Label(menu[2]));
+            content.addRow(4, new TextField());
+            //Autor
+            content.addRow(5, new Label(menu[3]));
+            content.addRow(6, new TextField());
+            //fechaSalida
+            content.addRow(7, new Label(menu[4]));
+            content.addRow(8, new DatePicker(LocalDate.now()));
+            //Precio
+            content.addRow(9, new Label(menu[5]));
+            TextField tf_price = new TextField();
+            Tools.onlyDoubleValue(tf_price);
+            content.addRow(10, tf_price);
+            //Stock
+            content.addRow(11, new CheckBox(menu[6]));
+            Button send = new Button("Enviar");
+            content.addRow(12, send);
+            for (Node n : content.getChildren()) {
+                GridPane.setHalignment(n, HPos.CENTER);
             }
-        });
+            send.setOnAction(event -> {
+                Book bookToSave = new Book();
+                bookToSave.setFrontPage(Tools.encodeBase64Img(cover.getImage()));
+                bookToSave.setTitle(((TextField) content.getChildren().get(5)).getText());
+                bookToSave.setAuthor(((TextField) content.getChildren().get(7)).getText());
+                bookToSave.setReleasedDate(((DatePicker) content.getChildren().get(9)).getValue().atStartOfDay());
+                bookToSave.setPrice(Double.valueOf(((TextField) content.getChildren().get(11)).getText()));
+                bookToSave.setStock(((CheckBox) content.getChildren().get(12)).isSelected());
+                LinkedHashMap<Operations.UserOptions, Object> operation = new LinkedHashMap<>();
+                operation.put(Operations.UserOptions.AddBookAction, bookToSave);
+                try {
+                    SocketService.sendDataToServer(operation);
+                    cover.setImage(Tools.decodeBase64Img(menu[0]));
+                    tf_cover.clear();
+                    ((TextField) content.getChildren().get(5)).clear();
+                    ((TextField) content.getChildren().get(7)).clear();
+                    ((TextField) content.getChildren().get(11)).clear();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            isContentAddBook = true;
+        }
 
     }
 
@@ -173,7 +178,6 @@ public class MenuController {
             gridForBook.addRow(2, new Label("Autor: "+((b.getAuthor()==null || b.getAuthor().equals(""))?"Anónimo":b.getAuthor())));
             gridForBook.addRow(3, new Label("Precio: "+b.getPrice()+"€"));
             Button btn_buy = new Button("Comprar");
-            //TODO setOnAction del botón
             btn_buy.setOnAction(event -> {
                 LinkedHashMap<Operations.UserOptions, Object> mapToSend = new LinkedHashMap<>();
                 Map<User, Book> user_book = new HashMap<>();

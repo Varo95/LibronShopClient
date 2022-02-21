@@ -81,7 +81,7 @@ public class SocketService {
                 } else if (o.containsKey(Operations.ServerActions.OperationOkButNoContent)) {
 
                 } else if (o.containsKey(Operations.ServerActions.UserAlreadyExist)) {
-
+                    Platform.runLater(()-> Dialog.showWarning("¡Error", "No pudiste registrarte con ese email", "Ya existe, prueba a iniciar sesion o registrarte con otro correo"));
                 } else if (o.containsKey(Operations.ServerActions.SendBooksToPurchase)) {
                     Platform.runLater(()-> MenuController.setContentOnView(Operations.UserOptions.ViewOnStockBooks, (List)o.get(Operations.ServerActions.SendBooksToPurchase), null));
                 } else if (o.containsKey(Operations.ServerActions.NotEnoughBalance)) {
@@ -98,9 +98,14 @@ public class SocketService {
                         Platform.runLater(() -> Dialog.showInformation("¡Éxito!", "Te has registrado correctamente como cliente", "Ahora puedes iniciar sesión"));
                     if (object instanceof Manager)
                         Platform.runLater(() -> Dialog.showInformation("¡Éxito!", "Te has registrado correctamente como librero ", "Ahora puedes iniciar sesión"));
-                    if (object instanceof Book b) {
-                        Platform.runLater(()-> Dialog.showInformation("¡Éxito!","Compraste el libro: "+b.getTitle()+"\ndel autor: "+b.getAuthor()+"\npor: "+b.getPrice(),"¡Disfrútalo!"));
-                    }
+                    if (object instanceof Book b)
+                        Platform.runLater(()-> Dialog.showInformation("¡Éxito!","Añadiste el libro: "+b.getTitle(),"Esta respuesta llegó desde el servidor"));
+                    if(object instanceof LinkedHashMap<?,?> c)
+                        c.forEach((o1, o2) -> {
+                            MenuController.setUser((User)o1);
+                            Book b = (Book) o2;
+                            Platform.runLater(()-> Dialog.showInformation("¡Éxito!","Compraste el libro: "+b.getTitle()+"\nAutor: "+((b.getAuthor()==null)?"Anónimo":b.getAuthor())+"\nPor: "+b.getPrice()+" €","¡Disfrútalo!"));
+                        });
                 }
             } catch (EOFException e) {
                 Platform.runLater(() -> Dialog.showWarning("¡Aviso!", "Hubo un error en la conexión al recibir la petición del servidor", ""));
