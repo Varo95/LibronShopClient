@@ -12,7 +12,7 @@
          </padding></GridPane>
    </left>
    <center>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" hvalue="1.0" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hvalue="1.0" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
         <content>
             <GridPane fx:id="content" alignment="CENTER" hgap="35.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="10.0" BorderPane.alignment="CENTER">
                 <padding>
@@ -27,7 +27,7 @@
           <Menu mnemonicParsing="false" text="Archivo">
             <items>
               <MenuItem fx:id="mi_connect" mnemonicParsing="false" text="Conectar al servidor" />
-                  <MenuItem fx:id="mi_close" mnemonicParsing="false" text="Cerrar" />
+                  <MenuItem fx:id="mi_close_session" mnemonicParsing="false" text="Cerrar sesión" />
             </items>
           </Menu>
         </menus>
