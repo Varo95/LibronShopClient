@@ -12,6 +12,7 @@ public class Client extends User implements Serializable {
 
     public Client(){
         super();
+        this.balance = 0.0;
     }
 
     public Client(Double balance, List<Book> pBooks) {

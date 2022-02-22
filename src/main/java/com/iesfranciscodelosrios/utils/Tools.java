@@ -85,6 +85,7 @@ public class Tools {
 
     public static String encodeBase64Img(Image img) {
         try {
+            if(img.getUrl()!=null)
             return Base64.getEncoder().encodeToString(Files.readAllBytes(new File(img.getUrl()).toPath()));
         } catch (IOException e) {
             Platform.runLater(() -> Dialog.showWarning("Error", "No se pudo enviar correctamente la portada", "Pongase en contacto con los desarrolladores"));

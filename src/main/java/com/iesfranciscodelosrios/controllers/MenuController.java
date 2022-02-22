@@ -1,6 +1,5 @@
 package com.iesfranciscodelosrios.controllers;
 
-import com.iesfranciscodelosrios.App;
 import com.iesfranciscodelosrios.model.Book;
 import com.iesfranciscodelosrios.model.Client;
 import com.iesfranciscodelosrios.model.User;
@@ -9,23 +8,25 @@ import com.iesfranciscodelosrios.utils.Dialog;
 import com.iesfranciscodelosrios.utils.Operations;
 import com.iesfranciscodelosrios.utils.Tools;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.skin.ScrollPaneSkin;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MenuController {
     @FXML
@@ -54,10 +55,10 @@ public class MenuController {
             GridPane.setHalignment(menuOptions.getChildren().get(i), HPos.CENTER);
         }
         content.setOnScroll(event -> {
-            double deltaY = event.getDeltaY()*3;
+            double deltaY = event.getDeltaY() * 3;
             double width = scrollPane.getContent().getBoundsInLocal().getWidth();
             double vvalue = scrollPane.getVvalue();
-            scrollPane.setVvalue(vvalue + -deltaY/width);
+            scrollPane.setVvalue(vvalue + -deltaY / width);
         });
     }
 
@@ -66,7 +67,7 @@ public class MenuController {
     }
 
     public static void setBlankContent() {
-        if(menuStage!=null) {
+        if (menuStage != null) {
             GridPane content = (GridPane) menuStage.getScene().lookup("#content");
             content.getChildren().removeIf(Objects::nonNull);
         }
@@ -109,10 +110,14 @@ public class MenuController {
                 setContentAddBook(content, menu);
             } else if (menuToLoadOption.equals(Operations.UserOptions.ViewOnStockBooks)) {
                 setContentViewBooks(content, (List<Book>) objects);
-            } else if (menuToLoadOption.equals(Operations.UserOptions.ViewAccount)){
+            } else if (menuToLoadOption.equals(Operations.UserOptions.ViewAccount)) {
                 setContentViewAccount(content, (double) objects.get(0));
-            } else if (menuToLoadOption.equals(Operations.UserOptions.ChargeAccount)){
+            } else if (menuToLoadOption.equals(Operations.UserOptions.ChargeAccount)) {
                 setContentChargeAccount(content, (Map<String, Client>) objects.get(0));
+            } else if (menuToLoadOption.equals(Operations.UserOptions.ViewPurchaseHistory)) {
+                setContentViewHistoricalData(content, (Map<LocalDateTime, Book>) objects.get(0));
+            } else if (menuToLoadOption.equals(Operations.UserOptions.ChangeStock)) {
+                setContentChangeStockBooks(content, (List<Book>) objects);
             }
         }
     }
@@ -225,19 +230,20 @@ public class MenuController {
         }
     }
 
-    private static void setContentViewAccount(GridPane content, double amount){
+    private static void setContentViewAccount(GridPane content, double amount) {
         setBlankContent();
         GridPane amountPane = new GridPane();
-        Label labelAmount = new Label("Tu saldo actual es de "+amount+" €");
-        labelAmount.setScaleX(2);labelAmount.setScaleY(2);
+        Label labelAmount = new Label("Tu saldo actual es de " + (Math.floor(amount * 100) / 100) + " €");
+        labelAmount.setScaleX(1.5);
+        labelAmount.setScaleY(1.5);
         amountPane.addRow(0, labelAmount);
-        content.add(amountPane,0,0);
+        content.add(amountPane, 0, 0);
         for (Node n : content.getChildren()) {
             GridPane.setHalignment(n, HPos.CENTER);
         }
     }
 
-    private static void setContentChargeAccount(GridPane content, Map<String, Client> values){
+    private static void setContentChargeAccount(GridPane content, Map<String, Client> values) {
         setBlankContent();
         GridPane increaseAmount = new GridPane();
         increaseAmount.setVgap(10);
@@ -260,12 +266,82 @@ public class MenuController {
                 }
             });
             increaseAmount.addRow(2, btn_onSend);
-            increaseAmount.addRow(3, new Label("Actualmente dispones de: "+client.getBalance()));
+            increaseAmount.addRow(3, new Label("Actualmente dispones de: " + (Math.floor(client.getBalance() * 100) / 100) + " € "));
         });
-        content.add(increaseAmount,0,0);
+        content.add(increaseAmount, 0, 0);
         for (Node n : content.getChildren()) {
             GridPane.setHalignment(n, HPos.CENTER);
         }
+    }
+
+    private static void setContentViewHistoricalData(GridPane content, Map<LocalDateTime, Book> history) {
+        setBlankContent();
+        GridPane historical = new GridPane();
+        historical.setHgap(20);
+        Label title_book = new Label("TITULO");
+        title_book.setScaleX(1.15);
+        title_book.setScaleY(1.15);
+        historical.addRow(0, title_book);
+        Label title_autor = new Label("AUTOR");
+        title_autor.setScaleX(1.15);
+        title_autor.setScaleY(1.15);
+        historical.addRow(0, title_autor);
+        Label title_price = new Label("PRECIO");
+        title_price.setScaleX(1.15);
+        title_price.setScaleY(1.15);
+        historical.addRow(0, title_price);
+        Label title_date = new Label("FECHA");
+        title_date.setScaleX(1.15);
+        title_date.setScaleY(1.15);
+        historical.addRow(0, title_date);
+        AtomicInteger i = new AtomicInteger(1);
+        history.forEach((localDateTime, book) -> {
+            historical.addRow(i.get(), new Label(book.getTitle()));
+            historical.addRow(i.get(), new Label(book.getAuthor()));
+            historical.addRow(i.get(), new Label(book.getPrice() + " €"));
+            historical.addRow(i.get(), new Label(localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy | HH:mm"))));
+            i.getAndIncrement();
+        });
+        content.add(historical, 0, 0);
+    }
+
+    private static void setContentChangeStockBooks(GridPane content, List<Book> books) {
+        setBlankContent();
+        content.add(getBookTable(books, content), 0, 0);
+    }
+
+    private static TableView<Book> getBookTable(List<Book> books, GridPane content) {
+        TableView<Book> result = new TableView<>();
+        TableColumn<Book, String> tcTitle = new TableColumn<>("Titulo");
+        TableColumn<Book, String> tcAuthor = new TableColumn<>("Autor");
+        TableColumn<Book, String> tcPDate = new TableColumn<>("Fecha lanzamiento");
+        TableColumn<Book, String> tcPrice = new TableColumn<>("Precio");
+        TableColumn<Book, CheckBox> tcStock = new TableColumn<>("¿En Stock?");
+        tcTitle.setCellValueFactory(eachBook -> new SimpleStringProperty(eachBook.getValue().getTitle()));
+        tcAuthor.setCellValueFactory(eachBook -> new SimpleStringProperty(eachBook.getValue().getAuthor()));
+        tcPDate.setCellValueFactory(eachBook -> new SimpleStringProperty(eachBook.getValue().getReleasedDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))));
+        tcPrice.setCellValueFactory(eachBook -> new SimpleStringProperty(eachBook.getValue().getPrice() + " €"));
+        tcStock.setCellValueFactory(eachBook -> {
+            CheckBox cb = new CheckBox();
+            cb.selectedProperty().setValue(eachBook.getValue().isStock());
+            cb.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+                eachBook.getValue().setStock(t1);
+                try {
+                    LinkedHashMap<Operations.UserOptions, Book> operation = new LinkedHashMap<>();
+                    operation.put(Operations.UserOptions.ChangeStockAction, eachBook.getValue());
+                    SocketService.sendDataToServer(operation);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            return new SimpleObjectProperty<>(cb);
+        });
+        result.getColumns().addAll(List.of(tcTitle,tcAuthor, tcPDate,tcPrice,tcStock));
+        result.getItems().addAll(books);
+        result.prefHeightProperty().bind(content.heightProperty());
+        result.prefWidthProperty().bind(content.widthProperty());
+        result.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        return result;
     }
 
 }
