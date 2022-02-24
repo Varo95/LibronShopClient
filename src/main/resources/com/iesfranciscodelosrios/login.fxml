@@ -38,7 +38,7 @@
                             <toggleGroup>
                                 <ToggleGroup fx:id="userType" />
                             </toggleGroup></RadioButton>
-                        <RadioButton fx:id="rbtn_operator" alignment="CENTER_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="Operario" toggleGroup="$userType" />
+                        <RadioButton fx:id="rbtn_operator" alignment="CENTER_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="Librero" toggleGroup="$userType" />
                     </children>
                 </VBox>
             </children>

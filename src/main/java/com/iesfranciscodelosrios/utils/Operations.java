@@ -20,13 +20,7 @@ public class Operations implements Serializable {
         AddBook(8), //menu añadir
         AddBookAction(9),//enviar libro
         ChangeStock(10), //menu libros para cambiar stock
-        ChangeStockAction(11),//enviar nuevos stocks
-        DeleteBook(12),//menu para eliminar libros
-        DeleteBookAction(13),//enviar borrar libro
-        SeeClients(14),//menu para ver clientes
-        SeeClientRemove(15),//opcion eliminar clientes
-        SeeClientsAdd(16),//opcion añadir cliente
-        SeeClientsModify(17);//opcion cambiar cliente
+        ChangeStockAction(11);//enviar nuevos stocks
         @Serial
         private static final long serialVersionUID = 1L;
         private final int i;

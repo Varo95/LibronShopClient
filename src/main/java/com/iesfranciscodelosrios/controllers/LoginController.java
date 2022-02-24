@@ -53,7 +53,7 @@ public class LoginController {
                 if (button.getText().equals("Usuario")) {
                     user = new Client();
                     user.setManager(false);
-                } else if (button.getText().equals("Operario")) {
+                } else if (button.getText().equals("Librero")) {
                     user = new Manager();
                     user.setManager(true);
                 }

@@ -30,7 +30,7 @@ public class SocketService {
 
     public static void connectToServer() {
         try {
-            server = new Socket("localhost", 1995);
+            server = new Socket(Tools.readIPFromTxt(), 1995);
             readServerInputs(server);
         } catch (IOException e) {
             Dialog.showError("Error", "Conexión rechazada", "Revise que el servidor está online");

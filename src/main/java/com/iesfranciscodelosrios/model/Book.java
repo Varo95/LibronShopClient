@@ -17,26 +17,21 @@ public class Book implements Serializable {
 
     private LocalDateTime releasedDate;
 
-    private LocalDateTime pDate;
-
     private boolean stock;
 
-    private Client buyer;
 
     public Book() {
         this.id = -1L;
     }
 
-    public Book(Long id, String title,String author, String frontPage, Double price, LocalDateTime releasedDate, LocalDateTime pDate, boolean stock, Client buyer) {
+    public Book(Long id, String title,String author, String frontPage, Double price, LocalDateTime releasedDate, boolean stock) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.frontPage = frontPage;
         this.price = price;
         this.releasedDate = releasedDate;
-        this.pDate = pDate;
         this.stock = stock;
-        this.buyer = buyer;
     }
 
     public Long getId() {
@@ -87,14 +82,6 @@ public class Book implements Serializable {
         this.releasedDate = releasedDate;
     }
 
-    public LocalDateTime getpDate() {
-        return pDate;
-    }
-
-    public void setpDate(LocalDateTime pDate) {
-        this.pDate = pDate;
-    }
-
     public boolean isStock() {
         return stock;
     }
@@ -103,11 +90,4 @@ public class Book implements Serializable {
         this.stock = stock;
     }
 
-    public Client getBuyer() {
-        return buyer;
-    }
-
-    public void setBuyer(Client buyer) {
-        this.buyer = buyer;
-    }
 }
